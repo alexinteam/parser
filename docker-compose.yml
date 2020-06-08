@@ -1,0 +1,59 @@
+version: '3'
+
+
+networks:
+    oviosionnetwork:
+        external: true
+
+
+services:
+    web:
+        build:
+            context: .docker/nginx
+        volumes:
+            - ./:/var/www:cached
+        ports:
+            - "80:80"
+        extra_hosts:
+            - "dockerhost:10.0.75.1"
+        networks:
+            - oviosionnetwork
+
+    app:
+        build:
+            context: .docker/php
+            args:
+                PUID: "1000"
+                # PHP_INSTALL_XDEBUG: "false"
+                # INSTALL_GIT: "true"
+                # PHP_XDEBUG_PORT: "9000"
+        volumes:
+            - ./:/var/www:cached
+#            - .docker/php/xdebug_custom.ini:/usr/local/etc/php/conf.d/51-xdebug-custom.ini
+        environment:
+            - "PHP_IDE_CONFIG=serverName=localhost"
+        user: www-data
+        extra_hosts:
+            - "dockerhost:10.0.75.1"
+        links:
+            - redis
+        networks:
+            - oviosionnetwork
+
+#    database:
+#        image: mysql:5.7.22
+#        environment:
+#            - "MYSQL_ROOT_PASSWORD=root"
+#            - "MYSQL_DATABASE=parser"
+#            - "MYSQL_USER=user"
+#            - "MYSQL_PASSWORD=user"
+#        ports:
+#            - "3306:3306"
+#        command: --sql_mode=""
+
+    redis:
+        image: redis:4.0.2
+        ports:
+            - "6379:6379"
+        networks:
+            - oviosionnetwork

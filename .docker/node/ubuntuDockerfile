@@ -1,0 +1,40 @@
+#
+#--------------------------------------------------------------------------
+# Image Setup
+# $REF: $
+#--------------------------------------------------------------------------
+#
+
+# FROM node:alpine
+FROM node:9.11
+
+RUN apt-get update -qy \
+    && apt-get install -qy --no-install-recommends \
+          sudo \
+    && apt-get clean -qy \
+    && rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
+RUN wget --no-check-certificate -q -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.10/gosu-amd64" \
+    && chmod +x /usr/local/bin/gosu
+
+RUN npm i -g gulp-cli yarn bower \
+    && npm i -g cross-env   \
+    && chmod +x /usr/local/lib/node_modules/yarn/bin/yarn.js \
+    && rm -rf /root/.npm    \
+    && echo "cache=/tmp/.npm" >> /.npmrc \
+    && echo "prefix=/tmp" >> /.npmrc
+
+RUN echo '%node ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/node
+
+COPY ./su-node /sbin/su-node
+
+RUN ln -s /usr/local/bin/gosu /sbin/su-exec && \
+    chmod +x /sbin/su-node
+
+WORKDIR /var/www
+
+CMD ["tail", "-f", "/dev/null"]
+
+EXPOSE 3000
+
+

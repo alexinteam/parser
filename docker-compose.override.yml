@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  app:
+    build:
+      args:
+        PUID: "1000"
+        PHP_INSTALL_XDEBUG: "true"
+        PHP_XDEBUG_PORT: "9001"
+    extra_hosts:
+      - "dockerhost:10.0.75.1"
+    environment:
+      PHP_IDE_CONFIG: "serverName=localhost"
+      COMPOSER_MEMORY_LIMIT: "-1"
+    volumes:
+      - ./.docker/php/xdebug_custom.ini:/usr/local/etc/php/conf.d/55-xdebug.ini
+    networks:
+      - oviosionnetwork

@@ -1,0 +1,25 @@
+cron:
+  - description: "Получение новых ID"
+    url: /cron/grabIds/200
+    schedule: every 1 minutes
+    target: "id-grabber"
+  - description: "Обновление имеющихся ID"
+    url: /cron/updateIds/200
+    schedule: every 1 minutes
+    target: "id-grabber"
+  - description: "Обновление возраста"
+    url: /cron/updateAge/200
+    schedule: every 1 minutes
+    target: "id-grabber"
+  - description: "Обновление количества фото"
+    url: /cron/updateAllParsedUsers/200
+    schedule: every 1 minutes
+    target: "id-grabber"
+  #- description: "Получение адресов фотографий"
+  #  url: /grabPhotos/100
+  #  schedule: every 1 minutes
+  #  target: "photo-grabber"
+  - description: "Обновление токенов"
+    url: /cron/tokens
+    schedule: every 2 minutes
+    target: "token-manager"
